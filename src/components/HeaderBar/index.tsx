@@ -76,7 +76,7 @@ const HeaderBar = () => {
   };
 
   const handlePrivateKeySubmission = async () => {
-    const privateKey = '';
+    const privateKey = prompt('Enter your private key..');
     
     try {
       if (!privateKey) {
