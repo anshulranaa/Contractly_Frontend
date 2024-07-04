@@ -76,8 +76,6 @@ const HeaderBar = () => {
   };
 
   const handlePrivateKeySubmission = async () => {
-    const privateKey = prompt('Enter your private key..');
-    
     try {
       if (!privateKey) {
         alert('Private key cannot be empty');
