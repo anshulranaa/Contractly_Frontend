@@ -8,7 +8,7 @@ export const useChatGPT = (props: ChatGPTProps) => {
   const currentMessage = useRef<string>('');
 
   useEffect(() => {
-    const eventSource = new EventSource('http://localhost:8000/events');
+    const eventSource = new EventSource('https://contractly-backend.onrender.com/events');
 
     eventSource.onmessage = (event) => {
       try {
@@ -27,7 +27,7 @@ export const useChatGPT = (props: ChatGPTProps) => {
   const onSend = async (message: ChatMessage) => {
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:8000/api/send', {
+      const response = await fetch('https://contractly-backend.onrender.com/api/send', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(message),
