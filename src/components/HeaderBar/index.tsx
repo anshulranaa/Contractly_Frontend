@@ -47,7 +47,7 @@ const HeaderBar = () => {
 
       const signature = await signer.signMessage('Deploying contract');
 
-      const response = await fetch('http://localhost:8000/api/deploy', {
+      const response = await fetch('https://contractly-backend.onrender.com/api/deploy', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -84,7 +84,7 @@ const HeaderBar = () => {
         return;
       }
 
-      const response = await fetch('http://localhost:8000/api/store-private-key', {
+      const response = await fetch('https://contractly-backend.onrender.com/api/store-private-key', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
