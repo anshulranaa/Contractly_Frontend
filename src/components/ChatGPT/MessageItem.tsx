@@ -1,29 +1,66 @@
-import React from 'react'
+// Import React and necessary packages
+import React from 'react';
+import MarkdownIt from 'markdown-it';
+import mdHighlight from 'markdown-it-highlightjs';
+import mdKatex from 'markdown-it-katex';
+import hljs from 'highlight.js/lib/core'; // Import highlight.js core
+import 'highlight.js/styles/github.css'; // Choose a style for highlighting
 
-import MarkdownIt from 'markdown-it'
-import mdHighlight from 'markdown-it-highlightjs'
-import mdKatex from 'markdown-it-katex'
+// Import specific languages from highlight.js if needed
+import javascript from 'highlight.js/lib/languages/javascript'; // Example: Import JavaScript
 
-import { ChatMessageItemProps } from './interface'
+// Register languages with highlight.js
+hljs.registerLanguage('javascript', javascript); // Example: Register JavaScript
 
-const md = MarkdownIt({ html: true }).use(mdKatex).use(mdHighlight)
-const fence = md.renderer.rules.fence!
-md.renderer.rules.fence = (...args) => {
-  const [tokens, idx] = args
-  const token = tokens[idx]
-  const rawCode = fence(...args)
+// Define Solidity language grammar
+hljs.registerLanguage('solidity', function(hljs) {
+  return {
+    name: 'Solidity',
+    keywords: 'function modifier contract mapping returns struct event address uint',
+    contains: [
+      hljs.C_LINE_COMMENT_MODE,
+      hljs.C_BLOCK_COMMENT_MODE,
+      hljs.NUMBER_MODE,
+      hljs.QUOTE_STRING_MODE,
+      hljs.APOS_STRING_MODE,
+      {
+        className: 'keyword',
+        beginKeywords: 'function modifier contract mapping returns struct event',
+        relevance: 10
+      },
+      {
+        className: 'title',
+        begin: hljs.UNDERSCORE_IDENT_RE
+      },
+      {
+        className: 'symbol',
+        begin: /[\w@#]+/,
+        relevance: 0
+      }
+    ]
+  };
+});
 
-  return `<div relative>
-  <div data-clipboard-text=${encodeURIComponent(token.content)} class="copy-btn">
-    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 32 32"><path fill="currentColor" d="M28 10v18H10V10h18m0-2H10a2 2 0 0 0-2 2v18a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2V10a2 2 0 0 0-2-2Z" /><path fill="currentColor" d="M4 18H2V4a2 2 0 0 1 2-2h14v2H4Z" /></svg>
-    <div>Copy</div>
-  </div>
-  ${rawCode}
-  </div>`
-}
+// Initialize markdown-it with plugins
+const md = MarkdownIt({ html: true }).use(mdKatex).use(mdHighlight, {
+  // Configure syntax highlighting with highlight.js
+  highlight: (str: string, lang: string) => { // Add type annotations for 'str' and 'lang'
+    if (lang && hljs.getLanguage(lang)) {
+      try {
+        return `<pre class="hljs"><code>${hljs.highlight(lang, str, true).value}</code></pre>`;
+      } catch (__) {}
+    }
 
+    return `<pre class="hljs"><code>${md.utils.escapeHtml(str)}</code></pre>`;
+  }
+});
+
+// Define props interface
+import { ChatMessageItemProps } from './interface';
+
+// Define MessageItem component
 const MessageItem = (props: ChatMessageItemProps) => {
-  const { message } = props
+  const { message } = props;
 
   return (
     <div className="message-item">
@@ -34,7 +71,8 @@ const MessageItem = (props: ChatMessageItemProps) => {
         <div className="message" dangerouslySetInnerHTML={{ __html: md.render(message.content) }} />
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default MessageItem
+// Export MessageItem component as default
+export default MessageItem;

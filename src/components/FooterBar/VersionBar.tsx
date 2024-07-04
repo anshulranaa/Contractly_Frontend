@@ -6,12 +6,8 @@ export interface VersionBarProps {
 }
 const VersionBar = (props: VersionBarProps) => {
   const { className } = props
-
-  return (
-    <Space className={className} size={[46, 0]}>
-      <span>Version: 0.1.0</span>
-    </Space>
-  )
+  return (<>
+  Developed by <a href ="https://www.linkedin.com/in/anshulrana20/"> Anshul Rana</a></>)
 }
 
 export default VersionBar

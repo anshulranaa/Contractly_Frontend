@@ -16,7 +16,10 @@ export interface ChatMessage {
 }
 
 export interface ChatMessageItemProps {
-  message: ChatMessage
+  message: {
+    role: string;
+    content: string;
+  };
 }
 
 export interface SendBarProps {

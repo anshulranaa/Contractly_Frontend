@@ -4,3 +4,11 @@ declare module '*.less' {
 }
 
 declare module 'markdown-it-katex'
+
+
+interface Window {
+  ethereum: {
+    isMetaMask?: boolean;
+    request: (args: { method: string; params?: any[] }) => Promise<any>;
+  };
+}
