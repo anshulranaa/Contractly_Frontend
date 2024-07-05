@@ -46,8 +46,8 @@ const HeaderBar = () => {
       setDeploying(true);
 
       const signature = await signer.signMessage('Deploying contract');
-
-      const response = await fetch('https://contractly-backend.onrender.com/api/deploy', {
+      const hideLoading = message.loading("Deploying....", 0);
+      const response = await fetch('http://localhost:8000/api/deploy', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -55,11 +55,17 @@ const HeaderBar = () => {
           signature: signature,
         }),
       });
-
       if (response.ok) {
         const data = await response.json();
-        message.success(`Deployment successful. Contract address: ${data.address}`);
+        hideLoading();
+        const etherscanLink = `https://sepolia.etherscan.io/address/${data.address}`;
+        message.success(
+          <>
+            Deployment successful. Contract address: <a href={etherscanLink} target="_blank" rel="noopener noreferrer">{data.address}</a>
+          </>
+        );
       } else {
+        hideLoading();
         const errorData = await response.json();
         message.error(`Deployment failed: ${errorData.error}`);
       }
@@ -76,14 +82,15 @@ const HeaderBar = () => {
   };
 
   const handlePrivateKeySubmission = async () => {
-    const privateKey = prompt('Enter private key');
+    const privateKey = prompt('Enter your private key:');
+    
     try {
       if (!privateKey) {
         alert('Private key cannot be empty');
         return;
       }
 
-      const response = await fetch('https://contractly-backend.onrender.com/api/store-private-key', {
+      const response = await fetch('http://localhost:8000/api/store-private-key', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
